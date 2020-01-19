@@ -38,9 +38,8 @@ class Producer:
         #
         #
         self.broker_properties = {
-            # TODO
-            # TODO
-            # TODO
+            "kafka" : "PLAINTEXT:localhost:9092",
+            "schema_registry" : "http:localhost:8081"
         }
 
         # If the topic does not already exist, try to create it
@@ -51,6 +50,7 @@ class Producer:
         # TODO: Configure the AvroProducer
         # self.producer = AvroProducer(
         # )
+        self.producer = AvroProducer({"bootstrap.servers": self.broker_properties["kafka"]}, schema_registry=self.broker_properties["schema_registry"])
 
     def create_topic(self):
         """Creates the producer topic if it does not already exist"""
