@@ -1,7 +1,7 @@
 {
         "type": "record",
-        "name": "value",
-        "namespace": "com.udacity.project1",
+        "name": "arrival.value",
+        "namespace": "com.udacity",
         "fields": [
             {"name": "station_id", "type": "string"},
             {"name": "train_id", "type": "string"},
