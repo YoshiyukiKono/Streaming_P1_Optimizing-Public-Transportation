@@ -78,32 +78,40 @@ class Weather(Producer):
         # TODO: Complete the function by posting a weather event to REST Proxy. Make sure to
         # specify the Avro schemas and verify that you are using the correct Content-Type header.
         #
-        #
+        #        
         logger.info("weather kafka proxy integration incomplete - skipping")
-        #resp = requests.post(
-        #    #
-        #    #
-        #    # TODO: What URL should be POSTed to?
-        #    #
-        #    #
-        #    f"{Weather.rest_proxy_url}/TODO",
-        #    #
-        #    #
-        #    # TODO: What Headers need to bet set?
-        #    #
-        #    #
-        #    headers={"Content-Type": "TODO"},
-        #    data=json.dumps(
-        #        {
-        #            #
-        #            #
-        #            # TODO: Provide key schema, value schema, and records
-        #            #
-        #            #
-        #        }
-        #    ),
-        #)
+        
+        resp = requests.post(
+            #
+            #
+            # TODO: What URL should be POSTed to?
+            #
+            #
+            f"{Weather.rest_proxy_url}/topics/TODO", # TODO
+            #
+            #
+            # TODO: What Headers need to bet set?
+            #
+            #
+            headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
+            data=json.dumps(
+                {
+                    #
+                    #
+                    # TODO: Provide key schema, value schema, and records
+                    #
+                    #
+                    "records": [{"value": asdict(TODO)}] # TODO
+                }
+            ),
+        )
         #resp.raise_for_status()
+        
+        try:
+            resp.raise_for_status()
+        except:
+            print(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
+            print(f"Sent data to REST Proxy {json.dumps(resp.json(), indent=2)}")
 
         logger.debug(
             "sent weather data to kafka, temp: %s, status: %s",
