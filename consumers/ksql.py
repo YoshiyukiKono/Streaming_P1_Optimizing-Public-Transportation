@@ -23,14 +23,17 @@ KSQL_URL = "http://localhost:8088"
 
 KSQL_STATEMENT = """
 CREATE TABLE turnstile (
-    ???
+    TODO VARCHAR,
+    TODO VARCHAR
 ) WITH (
-    ???
+    KAFKA_TOPIC='com.udacity.TODO',
+        VALUE_FORMAT='avro',
+        KEY='TODO'
 );
 
 CREATE TABLE turnstile_summary
 WITH (???) AS
-    ???
+    SELECT * FROM TODO WHERE TODO LIKE 'TODOa%';
 """
 
 
