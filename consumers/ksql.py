@@ -23,17 +23,18 @@ KSQL_URL = "http://localhost:8088"
 
 KSQL_STATEMENT = """
 CREATE TABLE turnstile (
-    TODO VARCHAR,
-    TODO VARCHAR
+    station_id VARCHAR,
+    station_name VARCHAR,
+    line VARCHAR
 ) WITH (
-    KAFKA_TOPIC='com.udacity.TODO',
+    KAFKA_TOPIC='com.udacity.turnstile',
         VALUE_FORMAT='avro',
         KEY='TODO'
 );
 
 CREATE TABLE turnstile_summary
-WITH (???) AS
-    SELECT * FROM TODO WHERE TODO LIKE 'TODOa%';
+WITH (VALUE_FORMAT='json') AS
+    SELECT station_id, COUNT(*) AS count FROM turnstile GROUP BY station_id;
 """
 
 
