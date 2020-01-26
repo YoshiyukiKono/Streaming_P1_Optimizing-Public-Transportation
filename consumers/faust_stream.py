@@ -36,22 +36,18 @@ class TransformedStation(faust.Record):
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
 
 # TODO: Define the input Kafka Topic. Hint: What topic did Kafka Connect output to?
-topic = app.topic("com.udacity.Station???", value_type=Station)
+station_topic = app.topic("com.udacity.Station???", key_type=int, value_type=Station)
 
 # TODO: Define the output Kafka Topic
-out_topic = app.topic("com.udacity.TransformedStation???", partitions=1)
+out_topic = app.topic("com.udacity.TransformedStation???", key_type=int, value_type=TransformedStation, partitions=1)
 
 # TODO: Define a Faust Table
 table = app.Table(
-    "TransformedStation???",
-    default=int???,
-    partitions=1,
-    changelog_topic=out_topic,
-).hopping(
-    size=timedelta(minutes=1),
-    step=timedelta(seconds=10)
+    "station_line",
+    default=str,
+    partitions=1#,
+    #changelog_topic=out_topic,
 )
-
 
 #
 #
@@ -61,21 +57,24 @@ table = app.Table(
 #
 #
 
-@app.agent(topic)
-async def station(station):
-    if station.red == True:
-        TODO
-        TransformedStation[s.station_id].line??? = 'red'
-    else if station.blue == True:
-        TODO
-        TransformedStation[s.station_id].line??? = 'blue'
-    else if station.green == True:
-        TODO
-        TransformedStation[s.station_id].line??? = 'green'
-        
-    async for s in station.group_by(Station.station_id):
-        TransformedStation[s.station_id] += s.number
-        print(f"{s.station_id}: {TransformedStation[s.station_id].current()}")
+@app.agent(station_topic)
+async def station(stations):
+    async for station in stations:
+        if station.red == True:
+            station_line[station.station_id] = 'red'
+        else if station.blue == True:
+            station_line[station.station_id] = 'blue'
+        else if station.green == True:
+            station_line[station.station_id] = 'green'
+
+        transformed_station = TransformedStation(
+            station_id = station.station_id
+            station_name = station.station_name
+            order = station.order
+            line = station_line[station.station_id]
+        )
+        print(f"{station.station_id}: {station_line[station.station_id].current()}")
+        await out_topic.send(key=station_id, value=transformed_station)
 
 if __name__ == "__main__":
     app.main()
