@@ -64,12 +64,10 @@ class KafkaConsumer:
         # the beginning or earliest
         logger.info("on_assign is incomplete - skipping")
         for partition in partitions:
-            pass
-            #
             #
             # TODO
             #
-            #
+            partition.offset = OFFSET_BEGINNING # ???
 
         logger.info("partitions assigned for %s", self.topic_name_pattern)
         consumer.assign(partitions)
@@ -91,8 +89,16 @@ class KafkaConsumer:
         # is retrieved.
         #
         #
-        logger.info("_consume is incomplete - skipping")
-        return 0
+        message = self.consumer.poll(1.0)
+        if message is None:
+            logger.info("no message received by consumer")
+            return 0
+        elif message.error() is not None:
+            logger.info(f"error from consumer {message.error()}")
+            return 0
+        else:
+            logger.info(f"consumed message {message.key()}: {message.value()}")
+            return 1
 
 
     def close(self):
