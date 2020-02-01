@@ -50,7 +50,7 @@ class Turnstile(Producer):
     def run(self, timestamp, time_step):
         """Simulates riders entering through the turnstile."""
         num_entries = self.turnstile_hardware.get_entries(timestamp, time_step)
-        logger.info("turnstile kafka integration incomplete - skipping")
+        #logger.info("turnstile kafka integration incomplete - skipping")
         #
         #
         # TODO: Complete this function by emitting a message to the turnstile topic for the number
@@ -66,8 +66,10 @@ class Turnstile(Producer):
                 # TODO: Configure this
                 #
                 #
-                "station_id": self.station_id,
-                "station_name": train.train_id,
-                "line": self.color
+                "station_id": self.station.station_id,
+                "station_name": self.station.station_name,
+                "line": self.station.color # ??.name
+                # https://knowledge.udacity.com/questions/63654
+                # in turnstile.py, you should set set line to "self.station.color.name". But in station.py, you should set line to "self.color.name" 
             },
         )
