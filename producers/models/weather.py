@@ -87,7 +87,7 @@ class Weather(Producer):
             # TODO: What URL should be POSTed to?
             #
             #
-            f"{Weather.rest_proxy_url}/topics/TODO", # TODO
+            f"{Weather.rest_proxy_url}/topics/{self.topic_name}", # TODO
             #
             #
             # TODO: What Headers need to bet set?
@@ -101,7 +101,7 @@ class Weather(Producer):
                     # TODO: Provide key schema, value schema, and records
                     #
                     #
-                    "records": [{"value": asdict(TODO)}] # TODO
+                    "records": [{"value": asdict(WheatherEvent())}] # TODO
                 }
             ),
         )
@@ -118,3 +118,8 @@ class Weather(Producer):
             self.temp,
             self.status.name,
         )
+
+@dataclass
+class WheatherEvent:
+    temperature: str = field(default_factory=faker.email)
+    status: int = field(default_factory=lambda: random.randint(0, 999))
