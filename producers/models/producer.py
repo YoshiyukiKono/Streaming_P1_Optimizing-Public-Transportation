@@ -61,8 +61,8 @@ class Producer:
         #
         #
         #logger.info("topic creation kafka integration incomplete - skipping")
-        client = AdminClient({"bootstrap.servers": self.broker_properties["kafka"]})
-        futures = client.create_topics(
+        self.client = AdminClient({"bootstrap.servers": self.broker_properties["kafka"]})
+        futures = self.client.create_topics(
             [NewTopic(topic=self.topic_name, num_partitions=self.num_partitions, replication_factor=self.num_replicas)]
         )
         for _, future in futures.items():
@@ -81,7 +81,8 @@ class Producer:
         # TODO: Write cleanup code for the Producer here
         #
         #
-        logger.info("producer close incomplete - skipping")
+        #logger.info("producer close incomplete - skipping")
+        self.client.close()
 
     def time_millis(self):
         """Use this function to get the key for Kafka Events"""
