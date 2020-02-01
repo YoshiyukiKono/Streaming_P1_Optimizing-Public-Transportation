@@ -45,15 +45,15 @@ def configure_connector():
                 # TODO
                 "connection.password": "chicago",
                 # TODO
-                "table.whitelist": "",
+                "table.whitelist": "stations",
                 # TODO
                 "mode": "incrementing",
                 # TODO
-                "incrementing.column.name": "",
+                "incrementing.column.name": "stop_id",
                 # TODO
-                "topic.prefix": "",
+                "topic.prefix": "org.chicago.cta.stations.table.v1",
                 # TODO
-                "poll.interval.ms": "",
+                "poll.interval.ms": "86400000",
             }
         }),
     )
