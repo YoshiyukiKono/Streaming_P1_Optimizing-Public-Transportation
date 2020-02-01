@@ -57,19 +57,20 @@ class Turnstile(Producer):
         # of entries that were calculated
         #
         #
-        self.producer.produce(
-            topic=self.topic_name,
-            key={"timestamp": self.time_millis()},
-            value={
-                #
-                #
-                # TODO: Configure this
-                #
-                #
-                "station_id": self.station.station_id,
-                "station_name": self.station.station_name,
-                "line": self.station.color # ??.name
-                # https://knowledge.udacity.com/questions/63654
-                # in turnstile.py, you should set set line to "self.station.color.name". But in station.py, you should set line to "self.color.name" 
-            },
-        )
+        for _ in range(num_entries):
+            self.producer.produce(
+                topic=self.topic_name,
+                key={"timestamp": timestamp},
+                value={
+                    #
+                    #
+                    # TODO: Configure this
+                    #
+                    #
+                    "station_id": self.station.station_id,
+                    "station_name": self.station.station_name,
+                    "line": self.station.color # ??.name
+                    # https://knowledge.udacity.com/questions/63654
+                    # in turnstile.py, you should set set line to "self.station.color.name". But in station.py, you should set line to "self.color.name" 
+                }
+            )
