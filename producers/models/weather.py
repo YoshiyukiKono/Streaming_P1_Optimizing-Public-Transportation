@@ -101,7 +101,7 @@ class Weather(Producer):
                     # TODO: Provide key schema, value schema, and records
                     #
                     #
-                    "records": [{"value": asdict(WheatherEvent())}] # TODO
+                    "records": [{"value": asdict(WheatherEvent(temperature=self.temp, status=self.status.value))}] # TODO
                 }
             ),
         )
@@ -121,5 +121,5 @@ class Weather(Producer):
 
 @dataclass
 class WheatherEvent:
-    temperature: str = field(default_factory=faker.email)
-    status: int = field(default_factory=lambda: random.randint(0, 999))
+    temperature: float
+    status: int
