@@ -36,17 +36,17 @@ class TransformedStation(faust.Record):
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
 
 # TODO: Define the input Kafka Topic. Hint: What topic did Kafka Connect output to?
-station_topic = app.topic("com.udacity.Station???", key_type=int, value_type=Station)
+station_topic = app.topic("com.udacity.station.table", key_type=int, value_type=Station)
 
 # TODO: Define the output Kafka Topic
-out_topic = app.topic("com.udacity.TransformedStation???", key_type=int, value_type=TransformedStation, partitions=1)
+out_topic = app.topic("org.chicago.cta.stations.table.v1", key_type=int, value_type=TransformedStation, partitions=1)
 
 # TODO: Define a Faust Table
 table = app.Table(
     "station_line",
     default=str,
     partitions=1#,
-    #changelog_topic=out_topic,
+    changelog_topic=out_topic,
 )
 
 #
