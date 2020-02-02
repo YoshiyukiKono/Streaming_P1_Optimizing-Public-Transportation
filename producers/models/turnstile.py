@@ -42,9 +42,9 @@ class Turnstile(Producer):
             key_schema=Turnstile.key_schema,
             value_schema=Turnstile.value_schema, TODO: Uncomment once schema is defined
             # TODO:
-            num_partitions=self.num_partitions,
+            num_partitions=1,
             # TODO:
-            num_replicas=self.num_replicas
+            num_replicas=1
         )
         self.station = station
         self.turnstile_hardware = TurnstileHardware(station)
