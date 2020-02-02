@@ -69,8 +69,6 @@ class Turnstile(Producer):
                     #
                     "station_id": self.station.station_id,
                     "station_name": self.station.station_name,
-                    "line": self.station.color # ??.name
-                    # https://knowledge.udacity.com/questions/63654
-                    # in turnstile.py, you should set set line to "self.station.color.name". But in station.py, you should set line to "self.color.name" 
+                    "line": self.station.color.name
                 }
             )
