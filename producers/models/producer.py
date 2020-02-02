@@ -97,7 +97,7 @@ class Producer:
                 except Exception as e:
                     pass
             self.producer.
-            self.client.close()
+            client.close()
 
     def time_millis(self):
         """Use this function to get the key for Kafka Events"""
