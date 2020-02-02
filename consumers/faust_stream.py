@@ -68,9 +68,9 @@ async def station(stations):
             station_line[station.station_id] = 'green'
 
         transformed_station = TransformedStation(
-            station_id = station.station_id
-            station_name = station.station_name
-            order = station.order
+            station_id = station.station_id,
+            station_name = station.station_name,
+            order = station.order,
             line = station_line[station.station_id]
         )
         print(f"{station.station_id}: {station_line[station.station_id].current()}")
