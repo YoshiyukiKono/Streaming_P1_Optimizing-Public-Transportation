@@ -4,6 +4,6 @@
   "name": "weather.value",
   "fields": [
     { "name": "temperature", "type": "long" },
-    { "name": "status", "type": "integer" }
+    { "name": "status", "type": "int" }
   ]
 }
