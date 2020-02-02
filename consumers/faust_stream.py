@@ -62,9 +62,9 @@ async def station(stations):
     async for station in stations:
         if station.red == True:
             station_line[station.station_id] = 'red'
-        else if station.blue == True:
+        elif station.blue == True:
             station_line[station.station_id] = 'blue'
-        else if station.green == True:
+        elif station.green == True:
             station_line[station.station_id] = 'green'
 
         transformed_station = TransformedStation(
