@@ -45,7 +45,7 @@ out_topic = app.topic("org.chicago.cta.stations.table.v1", key_type=int, value_t
 table = app.Table(
     "station_line",
     default=str,
-    partitions=1#,
+    partitions=1,
     changelog_topic=out_topic,
 )
 
