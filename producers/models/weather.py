@@ -10,6 +10,8 @@ import requests
 
 from models.producer import Producer
 
+from dataclasses import asdict, dataclass
+
 
 logger = logging.getLogger(__name__)
 
