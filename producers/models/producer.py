@@ -38,6 +38,9 @@ class Producer:
         #
         #
         self.broker_properties = {
+            # TODO
+            # TODO
+            # TODO
             "kafka" : "PLAINTEXT:localhost:9092",
             "schema_registry" : "http:localhost:8081"
         }
