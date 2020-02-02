@@ -41,7 +41,11 @@ class Station(Producer):
         super().__init__(
             topic_name,
             key_schema=Station.key_schema,
-            value_schema=Station.value_schema#, # TODO: Uncomment once schema is defined
+            value_schema=Station.value_schema, # TODO: Uncomment once schema is defined
+            # TODO:
+            num_partitions=1,
+            # TODO:
+            num_replicas=1
         )
 
         self.station_id = int(station_id)
