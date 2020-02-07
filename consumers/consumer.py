@@ -41,12 +41,12 @@ class KafkaConsumer:
                 # TODO
                 #
                 "kafka" : "PLAINTEXT:localhost:9092",
-                "schema_registry" : "http:localhost:8081"
+                "schema_registry" : "http://localhost:8081"
         }
 
         # TODO: Create the Consumer, using the appropriate type.
         if is_avro is True:
-            self.broker_properties["schema.registry.url"] = "http://localhost:8081"
+            # ?? self.broker_properties["schema.registry.url"] = "http://localhost:8081"
             self.consumer = AvroConsumer(
                 {
                     "bootstrap.servers": self.broker_properties["kafka"],
