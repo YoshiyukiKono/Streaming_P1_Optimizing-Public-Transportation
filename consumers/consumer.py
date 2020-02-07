@@ -50,7 +50,7 @@ class KafkaConsumer:
             self.consumer = AvroConsumer(
                 {
                     "bootstrap.servers": self.broker_properties["kafka"],
-                    schema_registry=self.broker_properties["schema_registry"],
+                    "schema_registry": self.broker_properties["schema_registry"],
                     "group.id": "0",
                     "auto.offset.reset": "earliest"
                 }
