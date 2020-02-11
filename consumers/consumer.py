@@ -40,17 +40,17 @@ class KafkaConsumer:
                 #
                 # TODO
                 #
-                "kafka" : "PLAINTEXT:localhost:9092",
+                "kafka" : "PLAINTEXT://localhost:9092",
                 "schema_registry" : "http://localhost:8081"
         }
 
         # TODO: Create the Consumer, using the appropriate type.
         if is_avro is True:
-            # ?? self.broker_properties["schema.registry.url"] = "http://localhost:8081"
+            #self.broker_properties["schema.registry.url"] = "http://localhost:8081"
             self.consumer = AvroConsumer(
                 {
                     "bootstrap.servers": self.broker_properties["kafka"],
-                    "schema_registry": self.broker_properties["schema_registry"],
+                    "schema.registry.url": self.broker_properties["schema_registry"],
                     "group.id": "0",
                     "auto.offset.reset": "earliest"
                 }
@@ -71,7 +71,7 @@ class KafkaConsumer:
         # how the `on_assign` callback should be invoked.
         #
         #
-        self.consumer.subscribe([self.topic_name_pattern], on_assign=on_assign)
+        self.consumer.subscribe([self.topic_name_pattern], on_assign=self.on_assign)
 
     def on_assign(self, consumer, partitions):
         """Callback for when topic assignment takes place"""
@@ -79,8 +79,11 @@ class KafkaConsumer:
         # the beginning or earliest
         #logger.info("on_assign is incomplete - skipping")
         for partition in partitions:
+            pass
+            #
             #
             # TODO
+            #
             #
             partition.offset = OFFSET_BEGINNING
 

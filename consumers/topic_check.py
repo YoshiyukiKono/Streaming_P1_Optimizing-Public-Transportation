@@ -1,5 +1,3 @@
-#https://knowledge.udacity.com/questions/65430
-# Dear student, please try to replace the code inside topic_check.py with this:
 from confluent_kafka.admin import AdminClient
 def topic_exists(topic):
     """Checks if the given topic exists in Kafka"""
@@ -24,6 +22,9 @@ def topic_pattern_match(pattern):
         Returns `True` if one or more topic names contains substring `pattern`.
         Returns `False` if not.
     """
+    # Added by Kono 02/11/2020
+    client = AdminClient({"bootstrap.servers": "PLAINTEXT://localhost:9092"})
+    
     topic_metadata = client.list_topics()
     topics = topic_metadata.topics
     filtered_topics = {key: value for key, value in topics.items() if contains_substring(key, pattern)}

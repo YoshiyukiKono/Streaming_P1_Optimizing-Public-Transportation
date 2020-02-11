@@ -23,22 +23,17 @@ KSQL_URL = "http://localhost:8088"
 
 KSQL_STATEMENT = """
 CREATE TABLE turnstile (
-    timestamp DOUBLE,
-    station_id INTEGER,
+    station_id INT,
     station_name VARCHAR,
     line VARCHAR
 ) WITH (
     KAFKA_TOPIC='com.udacity.turnstile',
         VALUE_FORMAT='avro',
-        KEY='timestamp'
+        KEY='station_id'
 );
-
-CREATE TABLE turnstile_summary (
-    station_id INTEGER,
-    count INTEGER,
-)
+CREATE TABLE turnstile_summary
 WITH (VALUE_FORMAT='json') AS
-    SELECT station_id, COUNT(*) AS count FROM turnstile GROUP BY station_id;
+    SELECT station_id, COUNT(line) AS count FROM turnstile GROUP BY station_id;
 """
 
 
@@ -51,11 +46,13 @@ def execute_statement():
 
     resp = requests.post(
         f"{KSQL_URL}/ksql",
+        #f"{KSQL_URL}",
         headers={"Content-Type": "application/vnd.ksql.v1+json"},
         data=json.dumps(
             {
                 "ksql": KSQL_STATEMENT,
-                "streamsProperties": {"ksql.streams.auto.offset.reset": "earliest"},
+                "streamsProperties": {"ksql.streams.auto.offset.reset": "earliest"}#,
+                #"streamsProperties": {"auto.offset.reset": "earliest"}
             }
         ),
     )

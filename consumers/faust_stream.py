@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 # Faust will ingest records from Kafka in this format
-@dataclass
 class Station(faust.Record):
     stop_id: int
     direction_id: str
@@ -23,7 +22,6 @@ class Station(faust.Record):
 
 
 # Faust will produce records to Kafka in this format
-@dataclass
 class TransformedStation(faust.Record):
     station_id: int
     station_name: str
@@ -36,7 +34,7 @@ class TransformedStation(faust.Record):
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
 
 # TODO: Define the input Kafka Topic. Hint: What topic did Kafka Connect output to?
-station_topic = app.topic("com.udacity.stations.table", key_type=int, value_type=Station)
+station_topic = app.topic("com.udacity.stations.table", value_type=Station)
 
 # TODO: Define the output Kafka Topic
 out_topic = app.topic("org.chicago.cta.stations.table.v1", key_type=int, value_type=TransformedStation, partitions=1)
@@ -49,6 +47,7 @@ table = app.Table(
     changelog_topic=out_topic,
 )
 
+
 #
 #
 # TODO: Using Faust, transform input `Station` records into `TransformedStation` records. Note that
@@ -56,7 +55,6 @@ table = app.Table(
 # then you would set the `line` of the `TransformedStation` record to the string `"red"`
 #
 #
-
 @app.agent(station_topic)
 async def station(stations):
     async for station in stations:
@@ -75,6 +73,7 @@ async def station(stations):
         )
         print(f"{station.station_id}: {station_line[station.station_id].current()}")
         await out_topic.send(key=station_id, value=transformed_station)
+
 
 if __name__ == "__main__":
     app.main()
