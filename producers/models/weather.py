@@ -79,11 +79,11 @@ class Weather(Producer):
         #
         #
         #logger.info("weather kafka proxy integration incomplete - skipping")
-        logger.info(f"weather kafka proxy run: {self.topic_name} - {self.time_millis()}")
+        logger.debug(f"weather kafka proxy run: {self.topic_name} - {self.time_millis()}")
         
-        logger.info(f"Weather.key_schema: {Weather.key_schema}")
+        logger.debug(f"Weather.key_schema: {Weather.key_schema}")
             
-        logger.info(f"Weather.value_schema: {Weather.value_schema}")
+        logger.debug(f"Weather.value_schema: {Weather.value_schema}")
         data=json.dumps(
                 {
                     #
@@ -91,31 +91,17 @@ class Weather(Producer):
                     # TODO: Provide key schema, value schema, and records
                     #
                     #
-                    "key_schema": Weather.key_schema,
-                    "value_schema": Weather.value_schema,
+                    "key_schema": json.dumps(Weather.key_schema),
+                    "value_schema": json.dumps(Weather.value_schema),
                     "records": [
                         {
-                            #"key": {"timestamp": self.time_millis()},
+                            "key": {"timestamp": self.time_millis()},
                             "value": {"temperature": self.temp, "status": self.status.name}
                         }
                     ]
                 }
             )
-        '''
-        data=json.dumps(
-                {
-                    "key_schema": Weather.key_schema,                    
-                    "value_schema": Weather.value_schema, 
-                    "records": [
-                        {
-                            "key": {"timestamp": time.time() },
-                            "value": asdict(WheatherEvent(temperature=self.temp, status=self.status.value))
-                        }
-                    ]
-                }
-        )
-        '''
-        logger.info(f"data: {data}")                       
+        logger.debug(f"data: {data}")                       
         resp = requests.post(
             #
             #
