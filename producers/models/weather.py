@@ -10,9 +10,6 @@ import requests
 
 from models.producer import Producer
 
-from dataclasses import asdict, dataclass
-
-
 logger = logging.getLogger(__name__)
 
 
@@ -80,48 +77,70 @@ class Weather(Producer):
         # TODO: Complete the function by posting a weather event to REST Proxy. Make sure to
         # specify the Avro schemas and verify that you are using the correct Content-Type header.
         #
-        #        
+        #
         #logger.info("weather kafka proxy integration incomplete - skipping")
+        logger.info(f"weather kafka proxy run: {self.topic_name} - {self.time_millis()}")
         
-        resp = requests.post(
-            #
-            #
-            # TODO: What URL should be POSTed to?
-            #
-            #
-            f"{Weather.rest_proxy_url}/topics/{self.topic_name}", # TODO
-            #
-            #
-            # TODO: What Headers need to bet set?
-            #
-            #
-            headers={"Content-Type": "application/vnd.kafka.avro.v2+json"},
-            data=json.dumps(
+        logger.info(f"Weather.key_schema: {Weather.key_schema}")
+            
+        logger.info(f"Weather.value_schema: {Weather.value_schema}")
+        data=json.dumps(
                 {
                     #
                     #
                     # TODO: Provide key schema, value schema, and records
                     #
                     #
-                    "records": [{"value": asdict(WheatherEvent(temperature=self.temp, status=self.status.value))}] # TODO
+                    "key_schema": Weather.key_schema,
+                    "value_schema": Weather.value_schema,
+                    "records": [
+                        {
+                            #"key": {"timestamp": self.time_millis()},
+                            "value": {"temperature": self.temp, "status": self.status.name}
+                        }
+                    ]
                 }
-            ),
+            )
+        '''
+        data=json.dumps(
+                {
+                    "key_schema": Weather.key_schema,                    
+                    "value_schema": Weather.value_schema, 
+                    "records": [
+                        {
+                            "key": {"timestamp": time.time() },
+                            "value": asdict(WheatherEvent(temperature=self.temp, status=self.status.value))
+                        }
+                    ]
+                }
+        )
+        '''
+        logger.info(f"data: {data}")                       
+        resp = requests.post(
+            #
+            #
+            # TODO: What URL should be POSTed to?
+            #
+            #
+            f"{Weather.rest_proxy_url}/topics/{self.topic_name}",
+            #
+            #
+            # TODO: What Headers need to bet set?
+            #
+            #
+            headers={"Content-Type": "application/vnd.kafka.avro.v2+json",
+                    "Accept": "application/vnd.kafka.v2+json"},
+            data=data
         )
         #resp.raise_for_status()
-        
         try:
             resp.raise_for_status()
         except:
             print(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
             print(f"Sent data to REST Proxy {json.dumps(resp.json(), indent=2)}")
 
-        logger.debug(
+        logger.info(
             "sent weather data to kafka, temp: %s, status: %s",
             self.temp,
             self.status.name,
         )
-
-@dataclass
-class WheatherEvent:
-    temperature: float
-    status: int

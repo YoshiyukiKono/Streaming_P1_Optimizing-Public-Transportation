@@ -38,16 +38,17 @@ class Turnstile(Producer):
         #
         #
         super().__init__(
-            f"com.udacity.turnstile", #{station_name}", # TODO: Come up with a better topic name
+            f"com.udacity.turnstile",#{station_name}", # TODO: Come up with a better topic name
             key_schema=Turnstile.key_schema,
-            value_schema=Turnstile.value_schema, TODO: Uncomment once schema is defined
-            # TODO:
+            value_schema=Turnstile.value_schema, #TODO: Uncomment once schema is defined
+            # TODO: 
             num_partitions=1,
-            # TODO:
+            # TODO: 
             num_replicas=1
         )
         self.station = station
         self.turnstile_hardware = TurnstileHardware(station)
+        self.station_name = station_name
 
     def run(self, timestamp, time_step):
         """Simulates riders entering through the turnstile."""
@@ -59,10 +60,12 @@ class Turnstile(Producer):
         # of entries that were calculated
         #
         #
+        logger.debug(f"turnstile run: {self.station_name} {timestamp.timestamp()} {time_step}")
         for _ in range(num_entries):
             self.producer.produce(
                 topic=self.topic_name,
-                key={"timestamp": timestamp},
+                #key={"timestamp": timestamp},
+                key={"timestamp": int(timestamp.timestamp()) },
                 value={
                     #
                     #
@@ -70,7 +73,9 @@ class Turnstile(Producer):
                     #
                     #
                     "station_id": self.station.station_id,
-                    "station_name": self.station.station_name,
+                    "station_name": self.station_name,
                     "line": self.station.color.name
-                }
+                },
+                value_schema=Turnstile.value_schema,
+                key_schema=Turnstile.key_schema 
             )

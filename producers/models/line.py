@@ -16,15 +16,19 @@ class Line:
     num_directions = 2
 
     def __init__(self, color, station_data, num_trains=10):
+        print("line - start init")
         self.color = color
         self.num_trains = num_trains
         self.stations = self._build_line_data(station_data)
         # We must always discount the terminal station at the end of each direction
         self.num_stations = len(self.stations) - 1
         self.trains = self._build_trains()
+        print("line initiated")
 
     def _build_line_data(self, station_df):
         """Constructs all stations on the line"""
+        print("line - _build_line_data")
+        
         stations = station_df["station_name"].unique()
 
         station_data = station_df[station_df["station_name"] == stations[0]]
@@ -42,6 +46,7 @@ class Line:
             )
             prev_station.dir_b = new_station
             prev_station = new_station
+            print("new_station:", new_station)
             line.append(new_station)
         return line
 
