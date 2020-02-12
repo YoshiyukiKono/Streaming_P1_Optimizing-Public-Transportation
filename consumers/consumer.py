@@ -71,6 +71,7 @@ class KafkaConsumer:
         # how the `on_assign` callback should be invoked.
         #
         #
+        logger.info("Consumer will subscribe - %s", self.topic_name_pattern)
         self.consumer.subscribe([self.topic_name_pattern], on_assign=self.on_assign)
 
     def on_assign(self, consumer, partitions):
@@ -78,17 +79,23 @@ class KafkaConsumer:
         # TODO: If the topic is configured to use `offset_earliest` set the partition offset to
         # the beginning or earliest
         #logger.info("on_assign is incomplete - skipping")
-        for partition in partitions:
-            pass
-            #
-            #
-            # TODO
-            #
-            #
-            partition.offset = OFFSET_BEGINNING
+        logger.info("on_assign - self.topic_name_pattern: %s", self.topic_name_pattern)
+        logger.info("on_assign - partitions: %s", partitions)
+        #for partition in partitions:
+        #    pass
+        #    #
+        #    #
+        #    # TODO
+        #    #
+        #    #
 
-        logger.info("partitions assigned for %s", self.topic_name_pattern)
+        for partition in partitions:
+            logger.info("on_assign - partition: %s", partition)
+            partition.offset = OFFSET_BEGINNING
+    
+        logger.info("BEFORE partitions assigned for %s", self.topic_name_pattern)
         consumer.assign(partitions)
+        logger.info("AFTER partitions assigned for %s", self.topic_name_pattern)
 
     async def consume(self):
         """Asynchronously consumes data from kafka topic"""
