@@ -13,19 +13,26 @@ CONNECTOR_NAME = "stations"
 
 def configure_connector():
     """Starts and configures the Kafka Connect connector"""
-    logging.debug("creating or updating kafka connect connector...")
+    logging.info("creating or updating kafka connect connector...")
 
-    resp = requests.get(f"{KAFKA_CONNECT_URL}/{CONNECTOR_NAME}")
-    if resp.status_code == 200:
-        logging.debug("connector already created skipping recreation")
-        return
+    #resp = requests.get(f"{KAFKA_CONNECT_URL}/{CONNECTOR_NAME}")
+    try:
+        resp = requests.get(f"{KAFKA_CONNECT_URL}/{CONNECTOR_NAME}")
+        if resp.status_code == 200:
+            logging.info("connector already created skipping recreation")
+            print(f"REST Proxy with 200 status {json.dumps(resp.json(), indent=2)}")
+            return
+    except:
+        print(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
+        print(f"Sent data to REST Proxy {json.dumps(resp.json(), indent=2)}")
+    
 
     # TODO: Complete the Kafka Connect Config below.
     # Directions: Use the JDBC Source Connector to connect to Postgres. Load the `stations` table
     # using incrementing mode, with `stop_id` as the incrementing column name.
     # Make sure to think about what an appropriate topic prefix would be, and how frequently Kafka
     # Connect should run this connector (hint: not very often!)
-    logger.info("connector code not completed skipping connector creation")
+    #logger.info("connector code not completed skipping connector creation")
     resp = requests.post(
         KAFKA_CONNECT_URL,
         headers={"Content-Type": "application/json"},
@@ -54,14 +61,20 @@ def configure_connector():
                 # TODO
                 "topic.prefix": "com.udacity.stations.table",
                 # TODO
-                "poll.interval.ms": "86400000",
+                "poll.interval.ms": "60000",
+                #"poll.interval.ms": "86400000",
             }
         }),
     )
 
     ## Ensure a healthy response was given
     #resp.raise_for_status()
-    #logging.debug("connector created successfully")
+    try:
+        resp.raise_for_status()
+    except:
+        print(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
+        print(f"Sent data to REST Proxy {json.dumps(resp.json(), indent=2)}")
+    logging.info("connector created successfully")
 
 
 if __name__ == "__main__":
