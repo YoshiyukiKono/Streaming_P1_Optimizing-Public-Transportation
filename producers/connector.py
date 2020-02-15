@@ -20,11 +20,11 @@ def configure_connector():
         resp = requests.get(f"{KAFKA_CONNECT_URL}/{CONNECTOR_NAME}")
         if resp.status_code == 200:
             logging.info("connector already created skipping recreation")
-            print(f"REST Proxy with 200 status {json.dumps(resp.json(), indent=2)}")
+            logging.info(f"REST Proxy with 200 status {json.dumps(resp.json(), indent=2)}")
             return
     except:
-        print(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
-        print(f"Sent data to REST Proxy {json.dumps(resp.json(), indent=2)}")
+        logging.info(f"Failed to send data to REST Proxy")
+        logging.info(f"Sent data to REST Proxy {json.dumps(resp.json(), indent=2)}")
     
 
     # TODO: Complete the Kafka Connect Config below.
@@ -72,8 +72,8 @@ def configure_connector():
     try:
         resp.raise_for_status()
     except:
-        print(f"Failed to send data to REST Proxy {json.dumps(resp.json(), indent=2)}")
-        print(f"Sent data to REST Proxy {json.dumps(resp.json(), indent=2)}")
+        logging.info(f"Failed to send data to REST Proxy")
+        logging.info(f"Sent data to REST Proxy {json.dumps(resp.json(), indent=2)}")
     logging.info("connector created successfully")
 
 
