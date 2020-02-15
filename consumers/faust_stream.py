@@ -71,7 +71,7 @@ async def station(stations):
             order = station.order,
             line = station_line[station.station_id]
         )
-        print(f"{station.station_id}: {station_line[station.station_id].current()}")
+        logger.info(f"transform - {station.station_id}: {station_line[station.station_id].current()}")
         await out_topic.send(key=station_id, value=transformed_station)
 
 

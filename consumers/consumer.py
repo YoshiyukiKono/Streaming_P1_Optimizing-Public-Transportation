@@ -36,34 +36,46 @@ class KafkaConsumer:
         # and use the Host URL for Kafka and Schema Registry!
         #
         #
+        #self.broker_properties = {
+        #    #
+        #    # TODO
+        #    #
+        #    "kafka" : "PLAINTEXT://localhost:9092",
+        #    "schema_registry" : "http://localhost:8081"
+        #}
         self.broker_properties = {
-                #
-                # TODO
-                #
-                "kafka" : "PLAINTEXT://localhost:9092",
-                "schema_registry" : "http://localhost:8081"
+            "bootstrap.servers": "localhost:9092",
+            #"bootstrap.servers": "PLAINTEXT://localhost:9092",
+            "group.id": "udacity",
+            "auto.offset.reset": "earliest" if offset_earliest else "latest"
         }
 
         # TODO: Create the Consumer, using the appropriate type.
         if is_avro is True:
-            #self.broker_properties["schema.registry.url"] = "http://localhost:8081"
-            self.consumer = AvroConsumer(
-                {
-                    "bootstrap.servers": self.broker_properties["kafka"],
-                    "schema.registry.url": self.broker_properties["schema_registry"],
-                    "group.id": "0",
-                    "auto.offset.reset": "earliest"
-                }
-            )
+            self.broker_properties["schema.registry.url"] = "http://localhost:8081"
+            self.consumer = AvroConsumer(self.broker_properties)
+            #self.consumer = AvroConsumer(
+            #    {
+            #        "bootstrap.servers": self.broker_properties["kafka"],
+            #        "schema.registry.url": self.broker_properties["schema_registry"],
+            #        "group.id": "0",
+            #        "auto.offset.reset": "earliest"
+            #        self.broker_properties["schema.registry.url"] = "http://localhost:8081"
+            #        
+            #    }
+            #)
+            logger.info("__init__ - AvroConsumer was created")
         else:
-            self.consumer = Consumer(
-                {
-                    "bootstrap.servers": self.broker_properties["kafka"],
-                    "group.id": "0",
-                    "auto.offset.reset": "earliest"
-                }
-            )
+            self.consumer = Consumer(self.broker_properties)
+            #self.consumer = Consumer(
+            #    {
+            #        "bootstrap.servers": self.broker_properties["kafka"],
+            #        "group.id": "0",
+            #        "auto.offset.reset": "earliest"
+            #    }
+            #)
             #pass
+            logger.info("__init__ - Consumer was created")
 
         #
         #
@@ -81,6 +93,7 @@ class KafkaConsumer:
         #logger.info("on_assign is incomplete - skipping")
         logger.info("on_assign - self.topic_name_pattern: %s", self.topic_name_pattern)
         logger.info("on_assign - partitions: %s", partitions)
+        logger.info("on_assign - self.consumer: %s", self.consumer)
         #for partition in partitions:
         #    pass
         #    #
@@ -118,7 +131,8 @@ class KafkaConsumer:
         #return 0
         message = self.consumer.poll(1.0)
         if message is None:
-            logger.info("no message received by consumer")
+            logger.info("no message received by consumer: %s", self.topic_name_pattern)
+            #logger.info("no message received by consumer")
             return 0
         elif message.error() is not None:
             logger.info(f"error from consumer {message.error()}")
