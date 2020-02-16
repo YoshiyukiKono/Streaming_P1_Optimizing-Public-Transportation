@@ -38,7 +38,8 @@ class Station(Producer):
         # replicas
         #
         #
-        topic_name = f"org.chicago.cta.station.arrivals.{station_name}" # TODO: Come up with a better topic name
+        #topic_name = f"org.chicago.cta.station.arrivals.{station_name}" # TODO: Come up with a better topic name
+        topic_name = f"org.chicago.cta.station.arrivals" # TODO: Come up with a better topic name
         super().__init__(
             topic_name,
             key_schema=Station.key_schema,
@@ -106,6 +107,7 @@ class Station(Producer):
             value_schema=Station.value_schema,
             key_schema=Station.key_schema
         )
+        logger.info(f"run - {self.topic_name}")
 
     def __str__(self):
         return "Station | {:^5} | {:<30} | Direction A: | {:^5} | departing to {:<30} | Direction B: | {:^5} | departing to {:<30} | ".format(
