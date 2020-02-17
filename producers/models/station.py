@@ -103,9 +103,9 @@ class Station(Producer):
                 "train_status": train.status.name,
                 "prev_station_id": prev_station_id,
                 "prev_direction": prev_direction
-            },
-            value_schema=Station.value_schema,
-            key_schema=Station.key_schema
+            }#,
+            #value_schema=Station.value_schema,
+            #key_schema=Station.key_schema
         )
         logger.info(f"run - {self.topic_name}")
 

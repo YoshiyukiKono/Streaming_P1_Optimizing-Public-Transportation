@@ -75,7 +75,7 @@ class Turnstile(Producer):
                     "station_id": self.station.station_id,
                     "station_name": self.station_name,
                     "line": self.station.color.name
-                },
-                value_schema=Turnstile.value_schema,
-                key_schema=Turnstile.key_schema 
+                }#,
+                #value_schema=Turnstile.value_schema,
+                #key_schema=Turnstile.key_schema 
             )

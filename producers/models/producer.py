@@ -39,12 +39,17 @@ class Producer:
         # and use the Host URL for Kafka and Schema Registry!
         #
         #
+        #self.broker_properties = {
+        #    # TODO
+        #    # TODO
+        #    # TODO
+        #    "kafka" : "PLAINTEXT://localhost:9092",
+        #    "schema_registry" : "http://localhost:8081"
+        #}
         self.broker_properties = {
             # TODO
-            # TODO
-            # TODO
-            "kafka" : "PLAINTEXT://localhost:9092",
-            "schema_registry" : "http://localhost:8081"
+            "bootstrap.servers" : "PLAINTEXT://localhost:9092",
+            "schema.registry.url" : "http://localhost:8081"
         }
 
         # If the topic does not already exist, try to create it
@@ -58,14 +63,18 @@ class Producer:
         # TODO: Configure the AvroProducer
         # self.producer = AvroProducer(
         # )
-        schema_registry = CachedSchemaRegistryClient({"url": self.broker_properties["schema_registry"]})
+        #schema_registry = CachedSchemaRegistryClient({"url": self.broker_properties["schema_registry"]})
 
-        self.producer = AvroProducer(
-            {"bootstrap.servers": self.broker_properties["kafka"]#, 
-             #"schema.registry.url": self.broker_properties["schema_registry"]
-            },
-            schema_registry=schema_registry
-        )
+        #self.producer = AvroProducer(
+        #    {"bootstrap.servers": self.broker_properties["kafka"]#, 
+        #     #"schema.registry.url": self.broker_properties["schema_registry"]
+        #    },
+        #    schema_registry=schema_registry
+        #)
+        self.producer = AvroProducer(config=self.broker_properties, 
+                                     default_key_schema=self.key_schema, 
+                                     default_value_schema=self.value_schema
+                                    )
         logger.debug("producer - initialized")
 
 
@@ -80,7 +89,8 @@ class Producer:
         #logger.info("topic creation kafka integration incomplete - skipping")
         logger.debug("producer - create_topic")
         
-        client = AdminClient({"bootstrap.servers": self.broker_properties["kafka"]})
+        #client = AdminClient({"bootstrap.servers": self.broker_properties["kafka"]})
+        client = AdminClient({"bootstrap.servers": self.broker_properties["bootstrap.servers"]})
         
         logger.debug("producer - create_topic - client created")
         
@@ -125,7 +135,8 @@ class Producer:
         #logger.info("producer close incomplete - skipping")
         if self.topic_name in Producer.existing_topics:
             Producer.existing_topics.remove(self.topic_name)
-            client = AdminClient({"bootstrap.servers": self.broker_properties["kafka"], 'debug': 'broker,admin' })
+            #client = AdminClient({"bootstrap.servers": self.broker_properties["kafka"], 'debug': 'broker,admin' })
+            client = AdminClient({"bootstrap.servers": self.broker_properties["bootstrap.servers"], 'debug': 'broker,admin' })
             futures = client.delete_topics(
                 [self.topic_name]
             )
