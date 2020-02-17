@@ -59,7 +59,7 @@ def configure_connector():
                 # TODO
                 "incrementing.column.name": "stop_id",
                 # TODO
-                "topic.prefix": "com.udacity.stations.table",
+                "topic.prefix": "com.udacity.",
                 # TODO
                 "poll.interval.ms": "60000",
                 #"poll.interval.ms": "86400000",
