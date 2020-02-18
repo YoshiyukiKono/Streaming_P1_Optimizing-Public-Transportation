@@ -34,7 +34,8 @@ class TransformedStation(faust.Record):
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
 
 # TODO: Define the input Kafka Topic. Hint: What topic did Kafka Connect output to?
-station_topic = app.topic("com.udacity.stations.table", value_type=Station)
+#station_topic = app.topic("com.udacity.stations.table", value_type=Station)
+station_topic = app.topic("com.udacity.stations", value_type=Station)
 
 # TODO: Define the output Kafka Topic
 out_topic = app.topic("org.chicago.cta.stations.table.v1", key_type=int, value_type=TransformedStation, partitions=1)
@@ -58,21 +59,24 @@ table = app.Table(
 @app.agent(station_topic)
 async def station(stations):
     async for station in stations:
+        line_color = ""
         if station.red == True:
-            station_line[station.station_id] = 'red'
+            line_color = 'red'
         elif station.blue == True:
-            station_line[station.station_id] = 'blue'
+            line_color = 'blue'
         elif station.green == True:
-            station_line[station.station_id] = 'green'
+            line_color = 'green'
 
         transformed_station = TransformedStation(
             station_id = station.station_id,
             station_name = station.station_name,
             order = station.order,
-            line = station_line[station.station_id]
+            line = line_color
         )
-        logger.info(f"transform - {station.station_id}: {station_line[station.station_id].current()}")
-        await out_topic.send(key=station_id, value=transformed_station)
+        #???table[station.station_id]
+        logger.info(f"transform - {station.station_id}: {transformed_station}")
+        #await out_topic.send(key=station.station_id, value=transformed_station)
+        await out_topic.send(value=transformed_station)
 
 
 if __name__ == "__main__":
