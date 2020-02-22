@@ -41,7 +41,7 @@ station_topic = app.topic("com.udacity.stations", value_type=Station)
 out_topic = app.topic("org.chicago.cta.stations.table.v1", key_type=int, value_type=TransformedStation, partitions=1)
 
 # TODO: Define a Faust Table
-table = app.Table(
+station_line_table = app.Table(
     "station_line",
     default=str,
     partitions=1,
@@ -59,21 +59,19 @@ table = app.Table(
 @app.agent(station_topic)
 async def station(stations):
     async for station in stations:
-        line_color = ""
         if station.red == True:
-            line_color = 'red'
+            station_line_table[station.station_id] = 'red'
         elif station.blue == True:
-            line_color = 'blue'
+            station_line_table[station.station_id] = 'blue'
         elif station.green == True:
-            line_color = 'green'
+            station_line_table[station.station_id] = 'green'
 
         transformed_station = TransformedStation(
             station_id = station.station_id,
             station_name = station.station_name,
             order = station.order,
-            line = line_color
+            line = station_line_table[station.station_id]
         )
-        #???table[station.station_id]
         logger.info(f"transform - {station.station_id}: {transformed_station}")
         #await out_topic.send(key=station.station_id, value=transformed_station)
         await out_topic.send(value=transformed_station)
