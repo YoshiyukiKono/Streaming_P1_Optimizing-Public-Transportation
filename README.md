@@ -166,7 +166,7 @@ The following directory layout indicates the files that the student is responsib
 ## Running and Testing
 
 To run the simulation, you must first start up the Kafka ecosystem on their machine utilizing Docker Compose.
-```%> sudo docker-compose up```
+```%> docker-compose up```
 
 
 ### Install Docker
