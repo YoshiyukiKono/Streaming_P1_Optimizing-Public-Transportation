@@ -166,6 +166,8 @@ The following directory layout indicates the files that the student is responsib
 ## Running and Testing
 
 To run the simulation, you must first start up the Kafka ecosystem on their machine utilizing Docker Compose.
+```%> sudo docker-compose up```
+
 
 ### Install Docker
 ```
@@ -188,7 +190,9 @@ git clone https://github.com/YoshiyukiKono/Streaming_P1_Optimizing-Public-Transp
 cd Streaming_P1_Optimizing-Public-Transportation/
 ```
 ### Run Docker Compose
-```%> sudo docker-compose up```
+```
+/usr/local/bin/docker-compose
+```
 
 Docker compose will take a 3-5 minutes to start, depending on your hardware. Please be patient and wait for the docker-compose logs to slow down or stop before beginning the simulation.
 
