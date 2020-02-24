@@ -173,7 +173,7 @@ To run the simulation, you must first start up the Kafka ecosystem on their mach
 ```
 sudo yum install -y yum-utils   device-mapper-persistent-data   lvm2
 sudo yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
-sudo yum install docker-ce docker-ce-cli containerd.io
+sudo yum install -y docker-ce docker-ce-cli containerd.io
 sudo systemctl start docker
 sudo docker run hello-world
 ```
@@ -185,13 +185,13 @@ sudo chmod +x /usr/local/bin/docker-compose
 ```
 ### Install git and clone the repository
 ```
-sudo yum install git
+sudo yum install -y git
 git clone https://github.com/YoshiyukiKono/Streaming_P1_Optimizing-Public-Transportation.git
 cd Streaming_P1_Optimizing-Public-Transportation/
 ```
 ### Run Docker Compose
 ```
-/usr/local/bin/docker-compose
+sudo /usr/local/bin/docker-compose up
 ```
 
 Docker compose will take a 3-5 minutes to start, depending on your hardware. Please be patient and wait for the docker-compose logs to slow down or stop before beginning the simulation.
@@ -236,7 +236,7 @@ sudo make altinstall
 ```
 https://github.com/confluentinc/confluent-kafka-python/issues/649
 ```
-sudo yum install librdkafka-devel python-devel
+sudo yum install -y librdkafka-devel python-devel
 ```
 When using `virtualenv` in the later section, needed to specify python version with `-p` option when you installed Python(3.7.6) to CentOS7
 ```
