@@ -238,6 +238,10 @@ https://github.com/confluentinc/confluent-kafka-python/issues/649
 ```
 sudo yum install -y librdkafka-devel python-devel
 ```
+https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/
+```
+sudo /usr/local/bin/pip3.7 install virtualenv
+```
 When using `virtualenv` in the later section, needed to specify python version with `-p` option when you installed Python(3.7.6) to CentOS7
 ```
 virtualenv -p python3.7 venv
