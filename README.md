@@ -167,7 +167,28 @@ The following directory layout indicates the files that the student is responsib
 
 To run the simulation, you must first start up the Kafka ecosystem on their machine utilizing Docker Compose.
 
-```%> docker-compose up```
+### Install Docker
+```
+sudo yum install -y yum-utils   device-mapper-persistent-data   lvm2
+sudo yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker-ce docker-ce-cli containerd.io
+sudo systemctl start docker
+sudo docker run hello-world
+```
+
+### Install docker-compose
+```
+sudo curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+### Install git and clone the repository
+```
+sudo yum install git
+git clone https://github.com/YoshiyukiKono/Streaming_P1_Optimizing-Public-Transportation.git
+cd Streaming_P1_Optimizing-Public-Transportation/
+```
+### Run Docker Compose
+```%> sudo docker-compose up```
 
 Docker compose will take a 3-5 minutes to start, depending on your hardware. Please be patient and wait for the docker-compose logs to slow down or stop before beginning the simulation.
 
