@@ -221,6 +221,29 @@ There are two pieces to the simulation, the `producer` and `consumer`. As you de
 
 However, when you are ready to verify the end-to-end system prior to submission, it is critical that you open a terminal window for each piece and run them at the same time. **If you do not run both the producer and consumer at the same time you will not be able to successfully complete the project**.
 
+#### Install Python 3.8
+https://computingforgeeks.com/how-to-install-python-on-3-on-centos/
+```
+sudo yum -y groupinstall "Development Tools"
+sudo yum -y install openssl-devel bzip2-devel libffi-devel
+gcc --version
+sudo yum -y install wget
+wget https://www.python.org/ftp/python/3.8.1/Python-3.8.1.tgz
+tar xvf Python-3.8.1.tgz
+cd Python-3.8*/
+./configure --enable-optimizations
+sudo make altinstall
+```
+https://github.com/confluentinc/confluent-kafka-python/issues/649
+```
+sudo yum install librdkafka-devel python-devel
+```
+When using `virtualenv` in the later section, needed to specify python version with `-p` option when you installed Python(3.8) to CentOS7
+```
+virtualenv -p python3.8 venv
+```
+When `pip install -r requirements.txt` failed (`confluent-kafka[avro]==1.1.0`) on CentOS7, it was succeeded to install the latest version of each package. 
+
 #### To run the `producer`:
 
 1. `cd producers`
