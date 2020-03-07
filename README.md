@@ -511,22 +511,27 @@ root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8083/co
 #### The Faust application ingests data from the stations topic
 - A consumer group for Faust is created on the Kafka Connect Stations topic.
 
-```
-TODO
-```
+Refer to `faust_stream.py`
 
 #### Data is translated correctly from the Kafka Connect format to the Faust table format
 - Data is ingested in the Station format and is then transformed into the TransformedStation format.
 
-```
-TODO
-```
+Refer to `faust_stream.py`
 
 #### Transformed Station Data is Present for each Station ID in the Kafka Topic
 - A topic is present in Kafka with the output topic name the student supplied. Inspecting messages in the topic, every station ID is represented.
 
 ```
-TODO
+root@764976b2c55a:/home/workspace# kafka-console-consumer --bootstrap-server localhost:9092 --topic org.chicago.cta.stations.table.v1 --from-beginning
+"blue"
+{"station_id": 40010, "station_name": "Austin", "order": 29, "line": "blue", "__faust": {"ns": "faust_stream.TransformedStation"}}
+"blue"
+{"station_id": 40010, "station_name": "Austin", "order": 29, "line": "blue", "__faust": {"ns": "faust_stream.TransformedStation"}}
+"green"
+{"station_id": 40020, "station_name": "Harlem/Lake", "order": 0, "line": "green", "__faust": {"ns": "faust_stream.TransformedStation"}}
+"green"
+{"station_id": 40020, "station_name": "Harlem/Lake", "order": 0, "line": "green", "__faust": {"ns": "faust_stream.TransformedStation"}}
+"green"
 ```
 
 ### KSQL
