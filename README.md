@@ -483,16 +483,14 @@ root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8083/co
 
 - Using the Schema Registry REST API, the schemas for stations key and value are visible.
 
-TODO ???
 ```
-root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8081/subjects/com.udacity.stations-key/versions/latest 
-{"error_code":40401,"message":"Subject not found."}
+curl --silent -X GET http://localhost:8081/subjects/org.chicago.cta.station.arrivals.v1-key/versions/latest
+{"subject":"org.chicago.cta.station.arrivals.v1-key","version":2,"id":4,"schema":"{\"type\":\"record\",\"name\":\"key\",\"namespace\":\"arrival\",\"fields\":[{\"name\":\"timestamp\",\"type\":\"long\"}]}"}
 ```
 
-TODO ???
 ```
-root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8081/subjects/com.udacity.stations-value/versions/latest 
-{"error_code":40401,"message":"Subject not found."
+root@e32738f9b3fa:/home/workspace# curl --silent -X GET http://localhost:8081/subjects/org.chicago.cta.station.arrivals.v1-value/versions/latest
+{"subject":"org.chicago.cta.station.arrivals.v1-value","version":2,"id":3,"schema":"{\"type\":\"record\",\"name\":\"value\",\"namespace\":\"arrival\",\"fields\":[{\"name\":\"station_id\",\"type\":\"int\"},{\"name\":\"train_id\",\"type\":\"string\"},{\"name\":\"direction\",\"type\":\"string\"},{\"name\":\"line\",\"type\":\"string\"},{\"name\":\"train_status\",\"type\":\"string\"},{\"name\":\"prev_station_id\",\"type\":[\"null\",\"int\"]},{\"name\":\"prev_direction\",\"type\":[\"null\",\"string\"]}]}"}
 ```
 
 #### Kafka Connect is configured to load on an incrementing ID
