@@ -472,6 +472,13 @@ Loop)","station_name":"Washington/Wabash","station_descriptive_name":"Washington
 root@629bbe46784e:~# 
 ```
 
+*Comment to the first submission*
+
+> I couldn't find any stations in this topic. There should be 230 stations total in this topic.
+
+The above comment was what I didn't expect. As you can see above copy of the console, the topic has exactly 230 messages.
+I guess it was because the reviewer didn't wait until the messages were published or my registry was not perfectly synced to my workstation.
+
 #### Kafka Connect is configured to define a Schema
 - Using the Kafka Connect REST API, the Kafka Connect configuration is configured to use JSON for both key and values.
 
