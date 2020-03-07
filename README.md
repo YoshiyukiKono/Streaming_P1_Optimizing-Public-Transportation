@@ -457,6 +457,20 @@ Description:
 ```
 
 ```
+ksql> describe TURNSTILE;
+
+Name                 : TURNSTILE
+ Field        | Type                      
+------------------------------------------
+ ROWTIME      | BIGINT           (system) 
+ ROWKEY       | VARCHAR(STRING)  (system) 
+ STATION_ID   | INTEGER                   
+ STATION_NAME | VARCHAR(STRING)           
+ LINE         | VARCHAR(STRING)           
+------------------------------------------
+```
+
+```
 ksql> select * from TURNSTILE;
 1583559134277 | �Ǩ�
                     | 40290 | ashland_and_63rd | green
@@ -471,5 +485,16 @@ Query terminated
 - Using the KSQL CLI, verify that station IDs have an associated count column.
 
 ```
+ksql> describe TURNSTILE_SUMMARY;
+
+Name                 : TURNSTILE_SUMMARY
+ Field      | Type                      
+----------------------------------------
+ ROWTIME    | BIGINT           (system) 
+ ROWKEY     | VARCHAR(STRING)  (system) 
+ STATION_ID | INTEGER                   
+ COUNT      | BIGINT                    
+----------------------------------------
+For runtime statistics and query details run: DESCRIBE EXTENDED <Stream,Table>;
 
 ```
