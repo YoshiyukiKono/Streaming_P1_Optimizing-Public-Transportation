@@ -479,6 +479,8 @@ root@629bbe46784e:~#
 The above comment was what I didn't expect. As you can see above copy of the console, the topic has exactly 230 messages.
 I guess it was because the reviewer didn't wait until the messages were published or my registry was not perfectly synced to my workstation.
 
+I uploaded the whole list [here](./docs/com.udacity.stations_output.txt)
+
 #### Kafka Connect is configured to define a Schema
 - Using the Kafka Connect REST API, the Kafka Connect configuration is configured to use JSON for both key and values.
 
