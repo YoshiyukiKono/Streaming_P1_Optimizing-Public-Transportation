@@ -1,5 +1,7 @@
 # Public Transit Status with Apache Kafka
 
+- [Project Rublic](#Rublic)
+
 In this project, you will construct a streaming event pipeline around Apache Kafka and its ecosystem. Using public data from the [Chicago Transit Authority](https://www.transitchicago.com/data/) we will construct an event pipeline around Kafka that allows us to simulate and display the status of train lines in real time.
 
 When the project is complete, you will be able to monitor a website to watch trains move from station to station.
@@ -290,18 +292,91 @@ Once the server is running, you may hit `Ctrl+C` at any time to exit.
 
 #### Kafka topics are created with appropriate settings
 - Using the Kafka Topics CLI, topics appear for arrivals on each train line in addition to the turnstiles for each of those stations.
+
+```
+```
 #### Kafka messages are produced successfully
 - Using the Kafka Topics CLI, messages continuously appear for each station on the train line, for both arrivals and turnstile actions.
+
+```
+root@629bbe46784e:~# kafka-topics --zookeeper localhost:2181 --list
+TURNSTILE_SUMMARY
+__confluent.support.metrics
+__consumer_offsets
+_confluent-ksql-default__command_topic
+_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KSTREAM-AGGREGATE-STATE-STORE-0000000004-changelog
+_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KTABLE-AGGREGATE-STATE-STORE-0000000009-changelog
+_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KTABLE-AGGREGATE-STATE-STORE-0000000009-repartition
+_confluent-metrics
+_confluent-monitoring
+_schemas
+com.udacity.stations
+com.udacity.streams.clickevents
+com.udacity.streams.pages
+com.udacity.streams.purchases
+com.udacity.streams.users
+com.udacity.turnstile
+connect-configs
+connect-offsets
+connect-status
+org.chicago.cta.station.arrivals.v1
+org.chicago.cta.stations.table.v1
+org.chicago.cta.weather.v1
+stations-stream-__assignor-__leader
+```
+
+```
+root@629bbe46784e:~# kafka-console-consumer --bootstrap-server localhost:9092 --topic org.chicago.cta.
+station.arrivals.v1  --from-beginning
+
+RL009bredin_serviceȆb
+
+
+
+GL003a
+greenin_service܁a܁
+GL005b
+
+
+^CProcessed a total of 8280 messages
+```
+
+```
+root@629bbe46784e:~# kafka-console-consumer --bootstrap-server localhost:9092 --topic com.udacity.turnstile  --from-beginningԇchicagored
+ morgan
+green morgan
+green
+ morgan
+...
+^CProcessed a total of 33382 messages
+```
+
+
 #### All messages have an associated value schema
 - Using the Schema Registry API, a schema is visible for arrivals and turnstile events.
+
+```
+root@629bbe46784e:~# curl --silent -X GET http://localhost:8081/subjects/
+["com.udacity.turnstile-key","org.chicago.cta.station.arrivals.v1-key","com.udacity.turnstile-value","_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KTABLE-AGGREGATE-STATE-STORE-0000000009-repartition-value","_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KTABLE-AGGREGATE-STATE-STORE-0000000009-changelog-value","org.chicago.cta.weather.v1-key","org.chicago.cta.weather.v1-value","_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KSTREAM-AGGREGATE-STATE-STORE-0000000004-changelog-value","org.chicago.cta.station.arrivals.v1-value"]
+```
+
+
+```
+root@629bbe46784e:~# curl --silent -X GET http://localhost:8081/subjects/com.udacity.turnstile-value/versions/latest 
+{"subject":"com.udacity.turnstile-value","version":1,"id":5,"schema":"{\"type\":\"record\",\"name\":\"value\",\"namespace\":\"turnstile\",\"fields\":[{\"name\":\"station_id\",\"type\":\"int\"},{\"name\":\"station_name\",\"type\":\"string\"},{\"name\":\"line\",\"type\":\"string\"}]}"}root@629bbe46784e:~#
+```
+
 
 ### Kafka Consumer
 #### Messages are consumed from Kafka
 - Stations, status, and weather data appear and update in the Transit Status UI.
+
+**As I succeeded to use neither Docker environment nor workspece for Web UI, I haven't been able to confirm this**
+
 #### Stations data is consumed from the beginning of the topic
 - All Blue, Green, and Red Line stations appear in the Transit Status UI.
 
-* As I succeeded to use neither Docker environment nor workspece for Web UI, I haven't been able to confirm this**
+**As I succeeded to use neither Docker environment nor workspece for Web UI, I haven't been able to confirm this**
 
 ### Kafka REST Proxy
 #### Kafka REST Proxy successfully delivers messages to the Kafka Topic
@@ -310,13 +385,31 @@ Once the server is running, you may hit `Ctrl+C` at any time to exit.
 #### Messages produced to the Kafka REST Proxy include a value schema
 - Using the Kafka Schema Registry REST API, a schema is defined for the weather topic.
 
+```
+root@629bbe46784e:~# curl --silent -X GET http://localhost:8081/subjects/org.chicago.cta.weather.v1-value/versions/latest 
+{"subject":"org.chicago.cta.weather.v1-value","version":1,"id":4,"schema":"{\"type\":\"record\",\"name\":\"value\",\"namespace\":\"weather\",\"fields\":[{\"name\":\"temperature\",\"type\":\"float\"},{\"name\":\"status\",\"type\":\"string\"}]}"}root@629bbe46784e:~#
+```
+
 ### Kafka Connect
 
 #### Kafka Connect successfully loads Station data from Postgres to Kafka
 - Using the kafka-console-consumer, all stations defined in Postgres are visible in the stations topic.
 
+```
+root@629bbe46784e:~#  kafka-console-consumer --bootstrap-server localhost:9092 --topic com.udacity.stations  --from-beginning
+{"stop_id":30001,"direction_id":"E","stop_name":"Austin (O'Hare-bound)","station_name":"Austin","station_descriptive_name":"Austin (Blue Line)","station_id":40010,"order":29,"red":false,"blue":true,"green":false}
+{"stop_id":30002,"direction_id":"W","stop_name":"Austin (Forest Pk-bound)","station_name":"Austin","station_descriptive_name":"Austin (Blue Line)","station_id":40010,"order":29,"red":false,"blue":true,"green":false}
+...
+Loop)","station_name":"Washington/Wabash","station_descriptive_name":"Washington/Wabash (Brown, Green, Orange, Purple & Pink Lines)","station_id":41700,"order":16,"red":false,"blue":false,"green":true}
+^CProcessed a total of 230 messages
+root@629bbe46784e:~# 
+```
+
 #### Kafka Connect is configured to define a Schema
 - Using the Kafka Connect REST API, the Kafka Connect configuration is configured to use JSON for both key and values.
+
+
+
 - Using the Schema Registry REST API, the schemas for stations key and value are visible.
 
 #### Kafka Connect is configured to load on an incrementing ID
@@ -325,15 +418,58 @@ Once the server is running, you may hit `Ctrl+C` at any time to exit.
 ### Faust Streams
 #### The Faust application ingests data from the stations topic
 - A consumer group for Faust is created on the Kafka Connect Stations topic.
+
 #### Data is translated correctly from the Kafka Connect format to the Faust table format
 - Data is ingested in the Station format and is then transformed into the TransformedStation format.
+
 #### Transformed Station Data is Present for each Station ID in the Kafka Topic
 - A topic is present in Kafka with the output topic name the student supplied. Inspecting messages in the topic, every station ID is represented.
 
 ### KSQL
 #### Turnstile topic is translated into a KSQL Table
 - Using the KSQL CLI, turnstile data is visible in the table TURNSTILE.
+
+```
+root@629bbe46784e:~# ksql
+                  
+                  ===========================================
+                  =        _  __ _____  ____  _             =
+                  =       | |/ // ____|/ __ \| |            =
+                  =       | ' /| (___ | |  | | |            =
+                  =       |  <  \___ \| |  | | |            =
+                  =       | . \ ____) | |__| | |____        =
+                  =       |_|\_\_____/ \___\_\______|       =
+                  =                                         =
+                  =  Streaming SQL Engine for Apache Kafka® =
+                  ===========================================
+
+Copyright 2017-2018 Confluent Inc.
+
+CLI v5.1.3, Server v5.1.3 located at http://localhost:8088
+
+Having trouble? Type 'help' (case-insensitive) for a rundown of how things work!
+
+ksql> help
+
+Description:
+        The KSQL CLI provides a terminal-based interactive shell for running queries. Each command must be on a separate line. For KSQL command syntax, see the documentation at https://github.com/confluentinc/ksql/docs/.
+...
+```
+
+```
+ksql> select * from TURNSTILE;
+1583559134277 | �Ǩ�
+                    | 40290 | ashland_and_63rd | green
+1583559139531 | �˨�
+                    | 40510 | garfield | green
+^C1583559144819 | �Ш�
+                      | 40940 | halsted | green
+Query terminated
+```
+
 #### Turnstile table is aggregated into a summary table
 - Using the KSQL CLI, verify that station IDs have an associated count column.
 
-### 
+```
+
+```
