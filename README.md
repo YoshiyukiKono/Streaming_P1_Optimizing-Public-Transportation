@@ -293,7 +293,43 @@ Once the server is running, you may hit `Ctrl+C` at any time to exit.
 #### Kafka topics are created with appropriate settings
 - Using the Kafka Topics CLI, topics appear for arrivals on each train line in addition to the turnstiles for each of those stations.
 
+First, I interpreted that it was suggested to have multiple topics for the same type, for example, tipic called 'station.<name>', but I eventually consolidated to the topics below, as suggested by my mentor. It sounded reasonable.
+
 ```
+root@629bbe46784e:~# kafka-topics --zookeeper localhost:2181 --list
+...
+com.udacity.stations
+...
+com.udacity.turnstile
+...
+```
+
+All topics.
+```
+root@629bbe46784e:~# kafka-topics --zookeeper localhost:2181 --list
+TURNSTILE_SUMMARY
+__confluent.support.metrics
+__consumer_offsets
+_confluent-ksql-default__command_topic
+_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KSTREAM-AGGREGATE-STATE-STORE-0000000004-changelog
+_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KTABLE-AGGREGATE-STATE-STORE-0000000009-changelog
+_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KTABLE-AGGREGATE-STATE-STORE-0000000009-repartition
+_confluent-metrics
+_confluent-monitoring
+_schemas
+com.udacity.stations
+com.udacity.streams.clickevents
+com.udacity.streams.pages
+com.udacity.streams.purchases
+com.udacity.streams.users
+com.udacity.turnstile
+connect-configs
+connect-offsets
+connect-status
+org.chicago.cta.station.arrivals.v1
+org.chicago.cta.stations.table.v1
+org.chicago.cta.weather.v1
+stations-stream-__assignor-__leader
 ```
 #### Kafka messages are produced successfully
 - Using the Kafka Topics CLI, messages continuously appear for each station on the train line, for both arrivals and turnstile actions.
@@ -325,6 +361,8 @@ org.chicago.cta.weather.v1
 stations-stream-__assignor-__leader
 ```
 
+org.chicago.cta.station.arrivals.v1
+
 ```
 root@629bbe46784e:~# kafka-console-consumer --bootstrap-server localhost:9092 --topic org.chicago.cta.
 station.arrivals.v1  --from-beginning
@@ -341,6 +379,8 @@ GL005b
 ^CProcessed a total of 8280 messages
 ```
 
+com.udacity.turnstile
+
 ```
 root@629bbe46784e:~# kafka-console-consumer --bootstrap-server localhost:9092 --topic com.udacity.turnstile  --from-beginningԇchicagored
  morgan
@@ -355,11 +395,21 @@ green
 #### All messages have an associated value schema
 - Using the Schema Registry API, a schema is visible for arrivals and turnstile events.
 
+All Subjects
+
 ```
 root@629bbe46784e:~# curl --silent -X GET http://localhost:8081/subjects/
 ["com.udacity.turnstile-key","org.chicago.cta.station.arrivals.v1-key","com.udacity.turnstile-value","_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KTABLE-AGGREGATE-STATE-STORE-0000000009-repartition-value","_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KTABLE-AGGREGATE-STATE-STORE-0000000009-changelog-value","org.chicago.cta.weather.v1-key","org.chicago.cta.weather.v1-value","_confluent-ksql-default_query_CTAS_TURNSTILE_SUMMARY_0-KSTREAM-AGGREGATE-STATE-STORE-0000000004-changelog-value","org.chicago.cta.station.arrivals.v1-value"]
 ```
 
+arrivals
+
+```
+root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8081/subjects/org.chicago.cta.station.arrivals.v1-value/versions/latest
+{"subject":"org.chicago.cta.station.arrivals.v1-value","version":1,"id":1,"schema":"{\"type\":\"record\",\"name\":\"value\",\"namespace\":\"arrival\",\"fields\":[{\"name\":\"station_id\",\"type\":\"int\"},{\"name\":\"train_id\",\"type\":\"string\"},{\"name\":\"direction\",\"type\":\"string\"},{\"name\":\"line\",\"type\":\"string\"},{\"name\":\"train_status\",\"type\":\"string\"},{\"name\":\"prev_station_id\",\"type\":[\"null\",\"int\"]},{\"name\":\"prev_direction\",\"type\":[\"null\",\"string\"]}]}"}root@764976b2c55a:/home/workspace# 
+```
+
+turnstile
 
 ```
 root@629bbe46784e:~# curl --silent -X GET http://localhost:8081/subjects/com.udacity.turnstile-value/versions/latest 
@@ -378,9 +428,26 @@ root@629bbe46784e:~# curl --silent -X GET http://localhost:8081/subjects/com.uda
 
 **As I succeeded to use neither Docker environment nor workspece for Web UI, I haven't been able to confirm this**
 
+
+
 ### Kafka REST Proxy
 #### Kafka REST Proxy successfully delivers messages to the Kafka Topic
 - Using the kafka-console-consumer, weather messages are visible in the weather topic and are regularly produced as the simulation runs.
+
+
+```
+root@764976b2c55a:/home/workspace# kafka-topics --zookeeper localhost:2181 --list | grep weather
+org.chicago.cta.weather.v1
+```
+
+```
+root@764976b2c55a:/home/workspace# kafka-console-consumer --bootstrap-server localhost:9092 --topic org.chicago.cta.weather.v1  --from-beginning
+"<2B
+windy
+
+sunny
+...
+```
 
 #### Messages produced to the Kafka REST Proxy include a value schema
 - Using the Kafka Schema Registry REST API, a schema is defined for the weather topic.
@@ -408,22 +475,59 @@ root@629bbe46784e:~#
 #### Kafka Connect is configured to define a Schema
 - Using the Kafka Connect REST API, the Kafka Connect configuration is configured to use JSON for both key and values.
 
-
+```root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8083/connectors 
+["stations"]
+root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8083/connectors/stations
+{"name":"stations","config":{"connector.class":"io.confluent.connect.jdbc.JdbcSourceConnector","incrementing.column.name":"stop_id","connection.password":"chicago","batch.max.rows":"500","table.whitelist":"stations","mode":"incrementing","key.converter.schemas.enable":"false","topic.prefix":"com.udacity.","connection.user":"cta_admin","poll.interval.ms":"60000","value.converter.schemas.enable":"false","name":"stations","value.converter":"org.apache.kafka.connect.json.JsonConverter","connection.url":"jdbc:postgresql://localhost:5432/cta","key.converter":"org.apache.kafka.connect.json.JsonConverter"},"tasks":[{"connector":"stations","task":0}],"type":"source"}
+```
 
 - Using the Schema Registry REST API, the schemas for stations key and value are visible.
 
+TODO ???
+```
+root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8081/subjects/com.udacity.stations-key/versions/latest 
+{"error_code":40401,"message":"Subject not found."}
+```
+
+TODO ???
+```
+root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8081/subjects/com.udacity.stations-value/versions/latest 
+{"error_code":40401,"message":"Subject not found."
+```
+
 #### Kafka Connect is configured to load on an incrementing ID
 - Using the Kafka Connect REST API, the Kafka Connect configuration uses an incrementing ID, and the ID is configured to be stop_id.
+
+> "incrementing.column.name":"stop_id"
+
+> "incrementing.column.name":"stop_id"
+
+```
+root@764976b2c55a:/home/workspace# curl --silent -X GET http://localhost:8083/connectors/stations
+{"name":"stations","config":{"connector.class":"io.confluent.connect.jdbc.JdbcSourceConnector","incrementing.column.name":"stop_id","connection.password":"chicago","batch.max.rows":"500","table.whitelist":"stations","mode":"incrementing","key.converter.schemas.enable":"false","topic.prefix":"com.udacity.","connection.user":"cta_admin","poll.interval.ms":"60000","value.converter.schemas.enable":"false","name":"stations","value.converter":"org.apache.kafka.connect.json.JsonConverter","connection.url":"jdbc:postgresql://localhost:5432/cta","key.converter":"org.apache.kafka.connect.json.JsonConverter"},"tasks":[{"connector":"stations","task":0}],"type":"source"}
+```
 
 ### Faust Streams
 #### The Faust application ingests data from the stations topic
 - A consumer group for Faust is created on the Kafka Connect Stations topic.
 
+```
+TODO
+```
+
 #### Data is translated correctly from the Kafka Connect format to the Faust table format
 - Data is ingested in the Station format and is then transformed into the TransformedStation format.
 
+```
+TODO
+```
+
 #### Transformed Station Data is Present for each Station ID in the Kafka Topic
 - A topic is present in Kafka with the output topic name the student supplied. Inspecting messages in the topic, every station ID is represented.
+
+```
+TODO
+```
 
 ### KSQL
 #### Turnstile topic is translated into a KSQL Table
